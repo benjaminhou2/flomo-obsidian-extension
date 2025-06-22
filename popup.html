@@ -1,0 +1,87 @@
+<!--
+  File: popup.html
+  Description: The HTML structure for the extension's popup window.
+  It defines all the user interface elements, including the text area,
+  buttons, and the configuration panel.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quick Memo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main container for the entire popup -->
+    <div class="container">
+        
+        <!-- Header Section -->
+        <header class="header">
+            <h1>Quick Memo</h1>
+            <div class="controls">
+                <!-- Checkboxes to select submission targets -->
+                <label class="checkbox-container">
+                    To Flomo
+                    <input type="checkbox" id="send-to-flomo" checked>
+                    <span class="checkmark"></span>
+                </label>
+                <label class="checkbox-container">
+                    To Obsidian
+                    <input type="checkbox" id="send-to-obsidian">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Text area for note input -->
+            <textarea id="memo-content" placeholder="Type your note here... (Ctrl+Enter to submit)"></textarea>
+            
+            <!-- Area for simple status messages (e.g., "Submitting...", "Success!") -->
+            <div id="status-message" class="status-message"></div>
+            
+            <!-- Area for detailed success/error result blocks -->
+            <div id="result-box" class="result-box hidden"></div>
+        </main>
+
+        <!-- Footer Section with Submit Button -->
+        <footer class="footer">
+            <button id="submit-button" class="submit-button">Submit to Flomo</button>
+        </footer>
+
+        <!-- Configuration Section (hidden by default) -->
+        <div class="settings-container">
+            <button id="settings-toggle" class="settings-toggle">
+                <!-- SVG Icon for Settings -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                    <path d="M19.8293 11.623C19.9534 11.237 20 10.8642 20 10.4854C20 10.1065 19.9534 9.73377 19.8293 9.34784L21.8291 7.77131C22.0519 7.59242 22.1054 7.29253 21.9868 7.0181L19.9868 3.5181C19.8682 3.24367 19.5799 3.10962 19.3007 3.21814L16.9039 4.19114C16.2235 3.70425 15.4807 3.3088 14.6938 3.0232L14.3336 0.498341C14.2985 0.222343 14.0535 0 13.7746 0H9.2254C8.94653 0 8.70154 0.222343 8.66642 0.498341L8.30619 3.0232C7.51933 3.3088 6.77653 3.70425 6.09608 4.19114L3.69929 3.21814C3.42014 3.10962 3.13181 3.24367 3.01323 3.5181L1.01323 7.0181C0.894648 7.29253 0.948144 7.59242 1.17088 7.77131L3.17073 9.34784C3.04664 9.73377 3 10.1065 3 10.4854C3 10.8642 3.04664 11.237 3.17073 11.623L1.17088 13.1995C0.948144 13.3784 0.894648 13.6783 1.01323 13.9527L3.01323 17.4527C3.13181 17.7271 3.42014 17.8612 3.69929 17.7527L6.09608 16.7797C6.77653 17.2666 7.51933 17.662 8.30619 17.9476L8.66642 20.4725C8.70154 20.7485 8.94653 21 9.2254 21H13.7746C14.0535 21 14.2985 20.7485 14.3336 20.4725L14.6938 17.9476C15.4807 17.662 16.2235 17.2666 16.9039 16.7797L19.3007 17.7527C19.5799 17.8612 19.8682 17.7271 19.9868 17.4527L21.9868 13.9527C22.1054 13.6783 22.0519 13.3784 21.8291 13.1995L19.8293 11.623ZM11.5 14.4854C9.57157 14.4854 8 12.9138 8 10.9854C8 9.05692 9.57157 7.48535 11.5 7.48535C13.4284 7.48535 15 9.05692 15 10.9854C15 12.9138 13.4284 14.4854 11.5 14.4854Z"></path>
+                </svg>
+            </button>
+            <div id="settings-panel" class="settings-panel hidden">
+                <!-- Flomo API Settings -->
+                <div class="setting-group">
+                    <label for="flomo-url">Flomo API URL</label>
+                    <input type="password" id="flomo-url" placeholder="Enter your Flomo webhook URL">
+                    <button id="test-flomo" class="test-button">Test</button>
+                </div>
+                <!-- Obsidian API Settings -->
+                <div class="setting-group">
+                    <label for="obsidian-vault">Obsidian Vault Name</label>
+                    <input type="text" id="obsidian-vault" placeholder="e.g., my-vault">
+                </div>
+                 <div class="setting-group">
+                    <label for="obsidian-token">Obsidian API Token</label>
+                    <input type="password" id="obsidian-token" placeholder="Enter your Obsidian API token">
+                    <button id="test-obsidian" class="test-button">Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Script Imports -->
+    <script src="flomoAPI.js"></script>
+    <script src="obsidianWriter.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html> 

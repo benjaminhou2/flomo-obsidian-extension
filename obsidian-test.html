@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obsidian API 测试工具</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .config-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #007AFF, #5856D6);
+            color: white;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,122,255,0.3);
+        }
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .result-content {
+            white-space: pre-wrap;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Obsidian API 测试工具</h1>
+        
+        <div class="config-section">
+            <h3>📋 API 配置</h3>
+            <div class="form-group">
+                <label for="apiPort">API 端口:</label>
+                <input type="number" id="apiPort" value="27123" placeholder="27123">
+            </div>
+            <div class="form-group">
+                <label for="vaultName">仓库名称:</label>
+                <input type="text" id="vaultName" value="ob-flomo" placeholder="ob-flomo">
+            </div>
+        </div>
+
+        <div>
+            <button onclick="testConnection()">🔍 测试连接</button>
+            <button onclick="createTestNote()">📝 创建测试笔记</button>
+            <button onclick="testAllEndpoints()">🛠️ 全面测试</button>
+        </div>
+
+        <div id="result" class="result-section" style="display: none;">
+            <h4>📊 测试结果:</h4>
+            <div id="resultContent" class="result-content"></div>
+        </div>
+    </div>
+
+    <script>
+        function getConfig() {
+            return {
+                port: document.getElementById('apiPort').value || 27123,
+                vault: document.getElementById('vaultName').value || 'ob-flomo'
+            };
+        }
+
+        function showResult(content, isSuccess = true) {
+            const resultDiv = document.getElementById('result');
+            const contentDiv = document.getElementById('resultContent');
+            
+            resultDiv.className = `result-section ${isSuccess ? 'success' : 'error'}`;
+            contentDiv.textContent = content;
+            resultDiv.style.display = 'block';
+            
+            // 滚动到结果区域
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function testConnection() {
+            const config = getConfig();
+            const baseUrl = `http://localhost:${config.port}`;
+            
+            try {
+                console.log('测试 API 连接:', baseUrl);
+                
+                // 测试基础 API
+                const response = await fetch(`${baseUrl}/`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                let result = `🔍 连接测试结果:\n\n`;
+                result += `API 地址: ${baseUrl}\n`;
+                result += `响应状态: ${response.status} ${response.statusText}\n`;
+                
+                if (response.status === 200 || response.status === 404) {
+                    result += `✅ API 服务正在运行!\n\n`;
+                    
+                    // 测试仓库访问
+                    const vaultUrl = `${baseUrl}/vault/${encodeURIComponent(config.vault)}`;
+                    console.log('测试仓库连接:', vaultUrl);
+                    
+                    const vaultResponse = await fetch(vaultUrl, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    
+                    result += `仓库测试地址: ${vaultUrl}\n`;
+                    result += `仓库响应状态: ${vaultResponse.status} ${vaultResponse.statusText}\n`;
+                    
+                    if (vaultResponse.status === 200) {
+                        result += `✅ 仓库 "${config.vault}" 存在且可访问!\n`;
+                        result += `\n🎉 API 配置完全正确，可以进行下一步测试。`;
+                        showResult(result, true);
+                    } else if (vaultResponse.status === 404) {
+                        result += `❌ 仓库 "${config.vault}" 不存在或无法访问\n\n`;
+                        result += `💡 建议检查:\n`;
+                        result += `1. 确认 Obsidian 中的仓库名称是否为 "${config.vault}"\n`;
+                        result += `2. 检查仓库名称是否拼写正确\n`;
+                        result += `3. 确认 Obsidian 已打开该仓库\n`;
+                        result += `4. 仓库名称应该是你在 Obsidian 左上角看到的文件夹名称`;
+                        showResult(result, false);
+                    } else {
+                        result += `⚠️ 仓库访问异常 (${vaultResponse.status})`;
+                        showResult(result, false);
+                    }
+                } else {
+                    result += `❌ API 服务不可用\n\n`;
+                    result += `💡 请检查:\n`;
+                    result += `1. Obsidian 是否正在运行\n`;
+                    result += `2. Local REST API 插件是否已安装并启用\n`;
+                    result += `3. 端口设置是否正确 (${config.port})`;
+                    showResult(result, false);
+                }
+                
+            } catch (error) {
+                console.error('连接测试失败:', error);
+                const result = `❌ 连接失败: ${error.message}\n\n💡 常见原因:\n1. Obsidian 未启动\n2. Local REST API 插件未启用\n3. 端口号错误 (${config.port})\n4. 网络连接问题`;
+                showResult(result, false);
+            }
+        }
+
+        async function createTestNote() {
+            const config = getConfig();
+            
+            try {
+                const now = new Date();
+                const timestamp = now.toISOString().replace(/[:.]/g, '-').slice(0, -5);
+                const fileName = `测试笔记-${timestamp}.md`;
+                
+                const content = `# 🧪 API 测试笔记
+
+**创建时间**: ${now.toLocaleString()}
+**测试工具**: Obsidian API 测试工具  
+**API 端口**: ${config.port}
+**仓库名称**: ${config.vault}
+
+---
+
+## 📝 测试内容
+
+这是一条通过 Local REST API 创建的测试笔记。
+
+### ✅ 测试项目
+- [x] API 连接测试
+- [x] 文件创建测试
+- [x] Markdown 格式测试
+- [x] 中文内容测试
+
+### 🏷️ 标签
+#测试 #API #Obsidian #快速笔记
+
+### 📊 技术信息
+- **HTTP 方法**: PUT
+- **Content-Type**: text/markdown
+- **文件编码**: UTF-8
+
+---
+
+*由 Obsidian API 测试工具创建于 ${now.toLocaleString()}*
+`;
+
+                const url = `http://localhost:${config.port}/vault/${encodeURIComponent(config.vault)}/${encodeURIComponent(fileName)}`;
+                
+                console.log('创建测试笔记:', url);
+                console.log('文件内容长度:', content.length);
+                
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'text/markdown',
+                        'Accept': 'application/json'
+                    },
+                    body: content
+                });
+                
+                let result = `📝 创建测试笔记结果:\n\n`;
+                result += `文件名: ${fileName}\n`;
+                result += `完整路径: ${config.vault}/${fileName}\n`;
+                result += `API 地址: ${url}\n`;
+                result += `响应状态: ${response.status} ${response.statusText}\n`;
+                
+                if (response.ok) {
+                    result += `✅ 测试笔记创建成功!\n\n`;
+                    result += `📂 请检查 Obsidian 中是否出现了文件:\n`;
+                    result += `   ${fileName}\n\n`;
+                    result += `🎉 恭喜! API 连接完全正常，扩展功能应该可以正常使用。\n`;
+                    result += `现在可以关闭此测试页面，使用浏览器扩展进行正常的笔记记录。`;
+                    showResult(result, true);
+                } else {
+                    let errorText = '';
+                    try {
+                        errorText = await response.text();
+                    } catch (e) {
+                        errorText = '无法获取错误详情';
+                    }
+                    
+                    result += `❌ 创建失败!\n`;
+                    result += `错误详情: ${errorText}\n\n`;
+                    
+                    if (response.status === 404) {
+                        result += `💡 404 错误分析:\n`;
+                        result += `1. 仓库名称 "${config.vault}" 可能不存在\n`;
+                        result += `2. 请确认你在 Obsidian 中看到的仓库名称\n`;
+                        result += `3. 检查仓库名称是否完全一致（区分大小写）\n`;
+                        result += `4. 确保 Obsidian 当前打开的就是这个仓库`;
+                    } else if (response.status === 403) {
+                        result += `💡 403 权限错误:\n`;
+                        result += `1. Local REST API 插件可能没有写入权限\n`;
+                        result += `2. 检查插件设置中的权限配置`;
+                    } else {
+                        result += `💡 其他错误 (${response.status}):\n`;
+                        result += `1. 请检查 Obsidian 和插件状态\n`;
+                        result += `2. 尝试重启 Obsidian 和插件`;
+                    }
+                    
+                    showResult(result, false);
+                }
+                
+            } catch (error) {
+                console.error('创建笔记失败:', error);
+                const result = `❌ 创建测试笔记失败: ${error.message}\n\n💡 建议:\n1. 请先运行"测试连接"确认 API 可用性\n2. 确保 Obsidian 正在运行\n3. 确保 Local REST API 插件已启用`;
+                showResult(result, false);
+            }
+        }
+
+        async function testAllEndpoints() {
+            const config = getConfig();
+            const baseUrl = `http://localhost:${config.port}`;
+            
+            let result = `🛠️ 全面 API 测试结果:\n\n`;
+            result += `测试时间: ${new Date().toLocaleString()}\n`;
+            result += `API 基地址: ${baseUrl}\n`;
+            result += `仓库名称: ${config.vault}\n\n`;
+            
+            // 测试端点列表
+            const endpoints = [
+                { name: '根路径', url: '/', description: '基础 API 可用性' },
+                { name: '仓库信息', url: '/vault', description: '获取仓库列表' },
+                { name: '指定仓库', url: `/vault/${encodeURIComponent(config.vault)}`, description: '访问指定仓库' }
+            ];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const url = `${baseUrl}${endpoint.url}`;
+                    console.log(`测试端点: ${endpoint.name} - ${url}`);
+                    
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    
+                    result += `📍 ${endpoint.name} (${endpoint.description}):\n`;
+                    result += `   URL: ${url}\n`;
+                    result += `   状态: ${response.status} ${response.statusText}\n`;
+                    
+                    if (response.status === 200) {
+                        result += `   ✅ 正常访问\n`;
+                        // 尝试获取响应内容
+                        try {
+                            const data = await response.text();
+                            if (data && data.length < 200) {
+                                result += `   响应: ${data.substring(0, 100)}${data.length > 100 ? '...' : ''}\n`;
+                            }
+                        } catch (e) {
+                            // 忽略解析错误
+                        }
+                    } else if (response.status === 404) {
+                        result += `   ⚠️ 未找到 (可能正常)\n`;
+                    } else {
+                        result += `   ❌ 异常状态\n`;
+                    }
+                    result += `\n`;
+                    
+                } catch (error) {
+                    result += `📍 ${endpoint.name}: ❌ 连接失败 (${error.message})\n\n`;
+                }
+            }
+            
+            result += `📋 测试总结:\n`;
+            result += `- 如果根路径和仓库信息返回 200 或 404，说明 API 服务正常\n`;
+            result += `- 如果指定仓库返回 200，说明仓库配置正确\n`;
+            result += `- 如果指定仓库返回 404，说明仓库名称可能错误\n`;
+            result += `- 如果所有请求都失败，说明 API 服务未启动`;
+            
+            showResult(result, true);
+        }
+
+        // 页面加载完成后的初始化
+        window.addEventListener('load', () => {
+            console.log('🔧 Obsidian API 测试工具已加载');
+            console.log('当前配置:', getConfig());
+            
+            // 显示使用说明
+            const instructions = `🎯 使用说明:
+
+1. 📋 确认配置信息是否正确
+2. 🔍 点击"测试连接"检查 API 可用性  
+3. 📝 点击"创建测试笔记"测试写入功能
+4. 🛠️ 点击"全面测试"进行详细诊断
+
+💡 提示: 请确保 Obsidian 正在运行且 Local REST API 插件已启用。`;
+            
+            showResult(instructions, true);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Flomo & Obsidian Quick Memo",
+  "version": "2.0.0",
+  "description": "A browser extension to quickly capture notes and send them to Flomo, Obsidian, or both.",
+  
+  "permissions": [
+    "storage",
+    "activeTab",
+    "notifications",
+    "nativeMessaging"
+  ],
+  
+  "host_permissions": [
+    "https://flomoapp.com/*",
+    "https://v.flomoapp.com/*",
+    "http://localhost:*/*",
+    "http://127.0.0.1:*/*"
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Quick Memo"
+  }
+}
