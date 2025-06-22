@@ -1,86 +1,86 @@
-# Flomo & Obsidian Quick Memo
+# Flomo & Obsidian 快速笔记
 
-A minimalist browser extension to quickly capture notes and send them to Flomo, Obsidian, or both simultaneously.
+一个简洁的浏览器扩展，可以快速捕获笔记并同时发送到 Flomo、Obsidian 或两者。
 
-*(Here is where a screenshot of the final UI would go)*
+*(这里应该放置最终用户界面的截图)*
 
-## Core Features
+## 核心功能
 
-- **Streamlined Interface**: A clean, simple text area to get your ideas down without distraction.
-- **Dual Destination**: Choose to send your note to Flomo, Obsidian, or both with simple checkboxes.
-- **Simple Configuration**: A small, collapsible panel to set up your API credentials.
-- **Connection Testing**: Verify your API setup for both Flomo and Obsidian right from the extension.
-- **Keyboard Shortcut**: Use `Ctrl + Enter` to submit your note instantly.
-- **Resizable Window**: The popup window can be resized to your liking.
+- **简洁界面**：干净简单的文本区域，让您专注于记录想法，避免干扰。
+- **双重目标**：通过简单的复选框选择将笔记发送到 Flomo、Obsidian 或两者。
+- **简单配置**：小巧的可折叠面板来设置您的 API 凭证。
+- **连接测试**：直接在扩展中验证您的 Flomo 和 Obsidian API 设置。
+- **键盘快捷键**：使用 `Ctrl + Enter` 即可快速提交笔记。
+- **可调整窗口**：弹出窗口可以根据您的喜好调整大小。
 
-## Installation and Setup
+## 安装和设置
 
-### 1. Install the Extension
-1.  Download or clone this project to a local folder on your computer.
-2.  Open your Chrome-based browser and navigate to `chrome://extensions/`.
-3.  Enable "Developer mode" using the toggle switch in the top-right corner.
-4.  Click the "Load unpacked" button and select the project folder you downloaded.
+### 1. 安装扩展
+1.  将此项目下载或克隆到您电脑的本地文件夹中。
+2.  打开您的 Chrome 浏览器，访问 `chrome://extensions/`。
+3.  使用右上角的开关启用"开发者模式"。
+4.  点击"加载已解压的扩展程序"按钮，选择您下载的项目文件夹。
 
-### 2. Configure the APIs
+### 2. 配置 API
 
-The extension requires API access to send notes. Click the settings icon (⚙️) in the popup to open the configuration panel.
+扩展需要 API 访问权限来发送笔记。点击弹出窗口中的设置图标（⚙️）打开配置面板。
 
-#### For Flomo:
-1.  **Get your Webhook URL**: In the Flomo app or on the website, go to `Settings > API` and copy your unique webhook URL.
-2.  **Enter in Extension**: Paste the URL into the "Flomo API URL" field in the extension's settings.
-3.  **Test**: Click the "Test" button to ensure the connection is working. You should see a success message and a new test memo in your Flomo.
+#### 配置 Flomo：
+1.  **获取您的 Webhook URL**：在 Flomo 应用或网站中，转到 `设置 > API`，复制您的唯一 webhook URL。
+2.  **在扩展中输入**：将 URL 粘贴到扩展设置中的"Flomo API URL"字段。
+3.  **测试**：点击"测试"按钮确保连接正常。您应该看到成功消息，并在您的 Flomo 中看到新的测试备忘录。
 
-#### For Obsidian:
-1.  **Install the Plugin**: In Obsidian, go to `Settings > Community plugins` and install the **"Local REST API"** plugin.
-2.  **Enable the Plugin**: After installation, enable the plugin.
-3.  **Get the API Token**: In the plugin's settings, you will find a long API token. Copy it.
-4.  **Enter in Extension**:
-    *   Paste the token into the "Obsidian API Token" field.
-    *   Enter your vault's name exactly as it appears in Obsidian into the "Obsidian Vault Name" field.
-5.  **Test**: Click the "Test" button. A success message indicates that the extension can connect to your vault.
+#### 配置 Obsidian：
+1.  **安装插件**：在 Obsidian 中，转到 `设置 > 社区插件`，安装 **"Local REST API"** 插件。
+2.  **启用插件**：安装后启用该插件。
+3.  **获取 API Token**：在插件设置中，您会找到一个长的 API token。复制它。
+4.  **在扩展中输入**：
+    *   将 token 粘贴到"Obsidian API Token"字段。
+    *   在"Obsidian Vault Name"字段中输入您的仓库名称，名称要与 Obsidian 中显示的完全一致。
+5.  **测试**：点击"测试"按钮。成功消息表示扩展可以连接到您的仓库。
 
-## Development Journey & Troubleshooting
+## 开发历程与故障排除
 
-This project went through a significant evolution, facing several technical challenges along the way. Here is a summary of the journey.
+这个项目经历了重大的演进过程，在此过程中面临了几个技术挑战。以下是整个历程的总结。
 
-### Pivot from Sync Tool to Quick Capture
+### 从同步工具到快速捕获的转变
 
-The project was initially conceived as a complex tool to **synchronize** notes from Flomo *to* Obsidian. However, this proved to be difficult and less useful. We pivoted to a much simpler and more powerful concept: a **quick capture** tool that sends notes *to* Flomo and/or Obsidian. This clarified the project's purpose and led to a complete UI redesign.
+该项目最初设想为一个复杂的工具，用于将笔记从 Flomo **同步**到 Obsidian。然而，这被证明是困难且不太有用的。我们转向了一个更简单、更强大的概念：一个**快速捕获**工具，可以将笔记发送**到** Flomo 和/或 Obsidian。这明确了项目的目的，并导致了完整的用户界面重新设计。
 
-### UI/UX Refinements
+### 用户界面/用户体验改进
 
-The first version of the new UI was functional but had usability issues. The popup window was too narrow (`width: 100vw` was a misinterpretation of viewport units in an extension context).
+新用户界面的第一个版本功能正常，但存在可用性问题。弹出窗口太窄（`width: 100vw` 在扩展上下文中是对视口单位的误解）。
 
--   **Solution**: We first set a fixed, wider width (`520px`) for better readability. To further improve usability, we then added the `resize: both;` CSS property to the main container, making the popup fully resizable by the user.
+-   **解决方案**：我们首先设置了固定的更宽宽度（`520px`）以提高可读性。为了进一步改善可用性，我们然后在主容器中添加了 `resize: both;` CSS 属性，使弹出窗口完全可由用户调整大小。
 
-### The Mystery of the Obsidian 404 Error
+### Obsidian 404 错误之谜
 
-The most significant challenge was a persistent `HTTP 404: Not Found` error when trying to send notes to Obsidian, even though the API server seemed to be running correctly. Our debugging process involved several steps:
+最重大的挑战是在尝试向 Obsidian 发送笔记时出现持续的 `HTTP 404: Not Found` 错误，即使 API 服务器似乎运行正常。我们的调试过程涉及几个步骤：
 
-1.  **Port and Vault Name Check**: We first suspected an incorrect port or a typo in the vault name. We standardized the port to the plugin's default (`27123`) and added `.trim()` to sanitize the vault name input. The error persisted.
+1.  **端口和仓库名称检查**：我们首先怀疑端口不正确或仓库名称中有拼写错误。我们将端口标准化为插件的默认值（`27123`），并添加了 `.trim()` 来清理仓库名称输入。错误仍然存在。
 
-2.  **Deep Logging**: We added "detective-level" logging to inspect the exact URL, headers, and body of the `fetch` request being sent to the Obsidian API. This confirmed our data was being sent, but the endpoint itself was wrong.
+2.  **深度日志记录**：我们添加了"侦探级"日志记录来检查发送到 Obsidian API 的 `fetch` 请求的确切 URL、标头和正文。这确认了我们的数据正在发送，但端点本身是错误的。
 
-3.  **The Misconception**: We were operating under the assumption that the API endpoint to create a note was `PUT /vault/{vault_name}/{filename}`. This was based on incomplete documentation and was the root cause of the 404 error.
+3.  **误解**：我们一直假设创建笔记的 API 端点是 `PUT /vault/{vault_name}/{filename}`。这基于不完整的文档，是 404 错误的根本原因。
 
-4.  **The Breakthrough**: The user provided the crucial information that the correct method was `POST /notes`. Furthermore, the vault name was not part of the URL but was expected inside the JSON payload, prepended to the filename (e.g., `path: "vault-name/note.md"`).
+4.  **突破**：用户提供了关键信息，正确的方法是 `POST /notes`。此外，仓库名称不是 URL 的一部分，而是在 JSON 负载内部预期的，作为文件名的前缀（例如，`path: "vault-name/note.md"`）。
 
-5.  **Final Bug - The Double Path**: After refactoring the code to use `POST /notes`, we encountered a `400 Bad Request` error. Logs revealed the file path was being duplicated (e.g., `ob-flomo/ob-flomo/note.md`). We had mistakenly prepended the vault name in two different places.
+5.  **最终错误 - 双重路径**：重构代码以使用 `POST /notes` 后，我们遇到了 `400 Bad Request` 错误。日志显示文件路径被重复了（例如，`ob-flomo/ob-flomo/note.md`）。我们错误地在两个不同的地方添加了仓库名称前缀。
 
--   **Final Solution**: The `obsidianWriter.js` was corrected to build the path correctly inside the JSON body of the `POST` request, finally resolving the issue and allowing notes to be created successfully.
+-   **最终解决方案**：`obsidianWriter.js` 被修正为在 `POST` 请求的 JSON 正文中正确构建路径，最终解决了问题，允许成功创建笔记。
 
-## Final File Structure
+## 最终文件结构
 
-After cleaning up redundant and legacy files, the project now consists of the following core components:
+在清理冗余和遗留文件后，项目现在包含以下核心组件：
 
--   `manifest.json`: The extension's configuration file.
--   `popup.html`: The UI structure for the popup window.
--   `popup.js`: The main script for UI logic, configuration, and event handling.
--   `styles.css`: All CSS styles for the UI.
--   `flomoAPI.js`: A class for handling communication with the Flomo API.
--   `obsidianWriter.js`: A class for handling note creation via the Obsidian Local REST API.
--   `README.md`: This file.
+-   `manifest.json`：扩展的配置文件。
+-   `popup.html`：弹出窗口的用户界面结构。
+-   `popup.js`：用于用户界面逻辑、配置和事件处理的主脚本。
+-   `styles.css`：用户界面的所有 CSS 样式。
+-   `flomoAPI.js`：用于处理与 Flomo API 通信的类。
+-   `obsidianWriter.js`：用于通过 Obsidian Local REST API 处理笔记创建的类。
+-   `README.md`：此文件。
 
-## License
+## 许可证
 
-This project is licensed under the MIT License. 
+此项目根据 MIT 许可证授权。 
